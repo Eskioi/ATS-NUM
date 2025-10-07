@@ -3,3 +3,9 @@ CREATE TABLE machine (
     machine VARCHAR(30),
     location VARCHAR(40)
 );
+
+CREATE TABLE userCountTrack (
+    id INT PRIMARY KEY,
+    hourNumber INT,
+    userCount INT,
+)

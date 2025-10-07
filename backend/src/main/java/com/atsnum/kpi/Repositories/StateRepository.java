@@ -21,7 +21,7 @@ public class StateRepository {
     private JdbcTemplate jdbcTemplate;
 
     public void save(Machine machine){
-        String sql = "INSERT into machine (id, machine, location) values (?, ?, ?)";
+        String sql = "INSERT into machine (id, machine, location) VALUES (?, ?, ?)";
         int rows = jdbcTemplate.update(sql, machine.getId(), machine.getMachine(), machine.getLocation());
         System.out.println(rows + "rows affected");
     }
