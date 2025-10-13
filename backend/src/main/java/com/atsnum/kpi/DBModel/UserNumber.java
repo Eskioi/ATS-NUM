@@ -1,18 +1,23 @@
 package com.atsnum.kpi.DBModel;
 
-import lombok.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Component
-@Scope("prototype")
+@AllArgsConstructor
+@Data
+@Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserNumber {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private int hourNumber;
     private int userCount;
 }
