@@ -1,18 +1,19 @@
 package com.atsnum.kpi.DBModel;
 
-import lombok.*;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Component
-@Scope("prototype")
+@Data
+@Entity
+@Table(name= "users")
 public class Machine {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String machine;
     private String location;
 }
