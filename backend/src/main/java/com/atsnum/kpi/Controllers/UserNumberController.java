@@ -9,27 +9,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/userNumber")
 public class UserNumberController {
 
     @Autowired
     UserNumberService userNumberService;
 
-    @GetMapping("userNumber/getAllUserNumbers")
+    @GetMapping("/getAllUserNumbers")
     public List<UserNumber> getUserNumbers () {
         return userNumberService.getUserNumbers();
     }
 
-    @GetMapping("userNumber/getUserNumber")
+    @GetMapping("/getUserNumber")
     public UserNumber getUserNumber (@RequestParam Integer id) {
         return userNumberService.getUserNumberById(id);
     }
 
-    @PostMapping("userNumber/addUserNumber")
+    @PostMapping("/addUserNumber")
     public void addUserNumber (@RequestBody AddUserNumberDTO addUserNumberDTO) {
         userNumberService.addUserNumber(addUserNumberDTO);
     }
 
-    @DeleteMapping("userNumber/deleteUserNumber")
+    @DeleteMapping("/deleteUserNumber")
     public void deleteUserNumber (@RequestParam Integer id) {
         userNumberService.deleteUserNumber(id);
     }

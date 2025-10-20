@@ -10,27 +10,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/machine")
 public class MachineController {
 
     @Autowired
     MachineService machineService;
 
-    @GetMapping("/machine/getAllMachines")
+    @GetMapping("/getAllMachines")
     public List<Machine> getMachines () {
         return machineService.getMachines();
     }
 
-    @GetMapping("/machine/getMachine")
+    @GetMapping("/getMachine")
     public Machine getMachine (@RequestParam Integer integer) {
         return machineService.getMachineById(integer);
     }
 
-    @PostMapping("/machine/addMachine")
+    @PostMapping("/addMachine")
     public void addMachine (@RequestParam AddMachineDTO addMachineDto) {
         machineService.addMachine(addMachineDto);
     }
 
-    @DeleteMapping("/machine/deleteMachine")
+    @DeleteMapping("/deleteMachine")
     public void deleteMachine (@RequestParam Integer id) {
         machineService.deleteMachine(id);
     }

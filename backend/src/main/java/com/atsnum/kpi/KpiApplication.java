@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 public class KpiApplication {
 
 	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(KpiApplication.class, args);
+		SpringApplication.run(KpiApplication.class, args);
 	}
 
 }
