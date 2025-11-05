@@ -18,13 +18,13 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run (String... args) {
-        userService.register(new RegisterRequestDTO("tester-user-1",
+        userService.registerInsider(new RegisterRequestDTO("tester-user-1",
                 "tester-user-1@gmail.com",
                 "SuperSecretPassword1"));
-        userService.register(new RegisterRequestDTO("tester-user-2",
+        userService.registerInsider(new RegisterRequestDTO("tester-user-2",
                 "tester-user-2@gmail.com",
                 "SuperSecretPassword2"));
-        userService.register(new RegisterRequestDTO("tester-user-3",
+        userService.registerInsider(new RegisterRequestDTO("tester-user-3",
                 "tester-user-3@gmail.com",
                 "SuperSecretPassword3"));
 

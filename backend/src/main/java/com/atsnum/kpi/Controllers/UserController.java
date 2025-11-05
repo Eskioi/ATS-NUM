@@ -16,7 +16,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/register")
-    public LoginResponseDTO getUsers (@RequestBody RegisterRequestDTO registerRequestDTO) {
+    public RegisterResponseDTO getUsers (@RequestBody RegisterRequestDTO registerRequestDTO) {
         return userService.register(registerRequestDTO);
     }
 
@@ -36,4 +36,9 @@ public class UserController {
 
     @DeleteMapping("/deleteUser")
     public void deleteUser (@RequestParam Integer integer) { userService.deleteUser(integer); }
+
+    @PostMapping("/verify")
+    public VerifyUserResponseDTO verifyUser (@RequestBody VerificationRequestDTO request) {
+        return (userService.verifyUser(request.getId(), request.getCode()));
+    }
 }
