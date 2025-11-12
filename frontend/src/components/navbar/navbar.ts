@@ -1,9 +1,11 @@
-import eventBus from "@/eventBus.ts";
+import eventBus from "../../eventBus.ts";
 import { useRouter } from "vue-router";
 import { reactive, onMounted, onUnmounted } from "vue";
+import { useSnackbar } from '../snackbar/snackbar'
 
 export default function useNavbar() {
   const router = useRouter();
+  const { show: showSnackbar } = useSnackbar()
 
   const state = reactive({
     isLoggedIn: !!localStorage.getItem("authKey"),
@@ -24,6 +26,8 @@ export default function useNavbar() {
 
   const handleAuthAction = () => {
     state.isLoggedIn ? logout() : login();
+    closeMenu();
+    router.push("/login");
   };
 
   const register = () => {
@@ -37,6 +41,7 @@ export default function useNavbar() {
   const logout = () => {
     localStorage.clear();
     state.isLoggedIn = false;
+    showSnackbar('Logout successful!', 'success')
     router.push({ name: 'Home' });
   };
 

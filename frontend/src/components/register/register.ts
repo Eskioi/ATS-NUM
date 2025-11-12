@@ -3,18 +3,37 @@ import { useRouter } from 'vue-router'
 import axios from 'axios'
 import eventBus from '../../eventBus'
 import useSpinner from '../spinner/spinner'
+import { useSnackbar } from '../snackbar/snackbar'
 
 export function useRegister() {
   const username = ref('')
   const email = ref('')
   const password = ref('')
   const errorMessage = ref('')
+  const emailError = ref('')
   const router = useRouter()
-  const { show, hide } = useSpinner()
 
+  const { show: showSpinner, hide: hideSpinner } = useSpinner() // spinner functions
+  const { show: showSnackbar } = useSnackbar() // snackbar functions
+
+  // Email validation
+  const validateEmail = (value: string) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    emailError.value = emailPattern.test(value) ? '' : 'Please enter a valid email address.'
+  }
+
+  // Handle registration
   const handleRegister = async () => {
     errorMessage.value = ''
-    show()
+    emailError.value = ''
+    validateEmail(email.value)
+
+    if (!username.value || !email.value || !password.value || emailError.value) {
+      showSnackbar('Please fill all fields correctly.', 'error')
+      return
+    }
+
+    showSpinner()
 
     const registerData = {
       username: username.value,
@@ -27,22 +46,19 @@ export function useRegister() {
       const id = response.data.id
 
       if (response.status === 200 && id) {
-        console.log('Registration successful:', response.data)
         localStorage.setItem('selfId', id)
         eventBus.emit('login-success')
+        showSnackbar('Registration successful!', 'success')
         await router.push({ name: 'Verify' })
       }
     } catch (error: any) {
-      console.error('Registration error:', error)
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage.value = error.response.data.message
-      } else {
-        errorMessage.value = "Erreur lors de l'inscription. Veuillez réessayer."
-      }
+      const msg = error?.response?.data?.message || "Registration failed. Please try again."
+      errorMessage.value = msg
+      showSnackbar(msg, 'error')
     } finally {
-      hide() 
+      hideSpinner()
     }
   }
 
-  return { username, email, password, errorMessage, handleRegister }
+  return { username, email, password, errorMessage, emailError, handleRegister, validateEmail }
 }
