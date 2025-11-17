@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -29,16 +30,21 @@ public class UserController {
     public List<User> getUsers () { return userService.getUsers(); }
 
     @GetMapping("/getUser")
-    public User getUser (@RequestParam Integer integer) { return userService.getUser(integer); }
+    public User getUser (@RequestParam UUID id) { return userService.getUser(id); }
 
     @PutMapping("/modifyPassword")
     public void modifyPassword (@RequestBody UserPasswordChangeDTO userPasswordChangeDTO) { userService.putPassword(userPasswordChangeDTO); }
 
     @DeleteMapping("/deleteUser")
-    public void deleteUser (@RequestParam Integer integer) { userService.deleteUser(integer); }
+    public void deleteUser (@RequestParam UUID id) { userService.deleteUser(id); }
 
     @PostMapping("/verify")
     public VerifyUserResponseDTO verifyUser (@RequestBody VerificationRequestDTO request) {
         return (userService.verifyUser(request.getId(), request.getCode()));
+    }
+
+    @PostMapping("/resend")
+    public void resendCode (@RequestBody ResendRequestDTO request) {
+        userService.updateVerificationCode(request.getId());
     }
 }

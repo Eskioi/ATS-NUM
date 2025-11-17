@@ -8,7 +8,7 @@ export default function useNavbar() {
   const { show: showSnackbar } = useSnackbar()
 
   const state = reactive({
-    isLoggedIn: !!localStorage.getItem("authKey"),
+    isLoggedIn: !!localStorage.getItem("jwtToken"),
     isMenuOpen: false,
   });
 

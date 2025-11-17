@@ -36,7 +36,7 @@ export function useLogin() {
       const id = response.data.id
 
       if (response.status === 200 && token) {
-        localStorage.setItem('authKey', token)
+        localStorage.setItem('jwtToken', token)
         localStorage.setItem('selfId', id)
         eventBus.emit('login-success')
         showSnackbar('Login successful!', 'success')

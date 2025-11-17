@@ -34,7 +34,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('authKey')
+  const isAuthenticated = !!localStorage.getItem('jwtToken')
 
   if ((to.name !== 'Login' && to.name !== 'Register' && to.name !== 'Verify') && !isAuthenticated) {
     next({ name: 'Login' })

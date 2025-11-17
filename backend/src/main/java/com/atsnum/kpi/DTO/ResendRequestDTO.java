@@ -5,7 +5,6 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Getter
-public class VerificationRequestDTO {
+public class ResendRequestDTO {
     private UUID id;
-    private String code;
 }

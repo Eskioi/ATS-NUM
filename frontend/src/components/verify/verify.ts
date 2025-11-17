@@ -35,7 +35,7 @@ export function useVerify() {
       
       if (response.status === 200 && response.data.token) {
         successMessage.value = 'Vérification réussie ! Redirection en cours...';
-        localStorage.setItem('authKey', response.data.token);
+        localStorage.setItem('jwtToken', response.data.token);
         eventBus.emit('login-success');
         setTimeout(() => router.push({ name: 'Home' }), 1500);
       } else {
