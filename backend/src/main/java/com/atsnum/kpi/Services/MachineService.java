@@ -7,6 +7,7 @@ import com.atsnum.kpi.Repositories.MachineRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MachineService {
@@ -18,15 +19,15 @@ public class MachineService {
         return repo.findAll();
     }
 
-    public Machine getMachineById (Integer integer) {
-        return repo.getReferenceById(integer);
+    public Machine getMachineById (UUID id) {
+        return repo.getReferenceById(id);
     }
 
     public void addMachine (AddMachineDTO machineDto) {
-        repo.save(new Machine(null, machineDto.getMachine(), machineDto.getLocation()));
+        repo.save(new Machine(null, machineDto.getMachine()));
     }
 
-    public void deleteMachine (Integer id) {
+    public void deleteMachine (UUID id) {
         repo.deleteById(id);
     }
 }

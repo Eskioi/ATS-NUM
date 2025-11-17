@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddMachineDTO {
     private String machine;
-    private String location;
 }

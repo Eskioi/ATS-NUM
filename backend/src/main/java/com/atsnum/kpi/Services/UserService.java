@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public User getUser (Integer id) {
+    public User getUser (UUID id) {
         return userRepo.getReferenceById(id);
     }
 
@@ -44,7 +45,7 @@ public class UserService {
                 user.isEnabled()));
     }
 
-    public void deleteUser (Integer id) {
+    public void deleteUser (UUID id) {
         userRepo.deleteById(id);
     }
 
@@ -94,11 +95,10 @@ public class UserService {
         }
 
         return new LoginResponseDTO(token,
-                user.getId(),
-                user.isEnabled());
+                user.getId());
     }
 
-    public void updateVerificationCode (Integer id) {
+    public void updateVerificationCode (UUID id) {
         User user = userRepo.getReferenceById(id);
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
@@ -112,7 +112,7 @@ public class UserService {
         return String.format("%06d", code);
     }
 
-    public VerifyUserResponseDTO verifyUser (Integer id, String code) {
+    public VerifyUserResponseDTO verifyUser (UUID id, String code) {
         User user = userRepo.getReferenceById(id);
 
         if (!code.equals(user.getVerificationCode())) {
@@ -126,6 +126,10 @@ public class UserService {
         userRepo.save(user);
 
         return (new VerifyUserResponseDTO(jwtUtil.generateToken(user.getId())));
+    }
+
+    public void resendCode (UUID id) {
+        updateVerificationCode(id);
     }
 
     public void sendVerificationEmail(User user){

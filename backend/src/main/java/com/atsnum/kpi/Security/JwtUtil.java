@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -14,7 +15,7 @@ public class JwtUtil {
 
     private final long expirationTime = 1000 * 60 * 24 * 14; // 14h
 
-    public String generateToken (Integer userId) {
+    public String generateToken (UUID userId) {
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .setIssuedAt(new Date())
@@ -23,15 +24,15 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Integer extractUserId (String token) {
-        return Integer.parseInt(
-                Jwts.parser()
-                        .setSigningKey(key)
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody()
-                        .getSubject()
-        );
+    public UUID extractUserId(String token) {
+        String subject = Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+
+        return UUID.fromString(subject);  // <-- parses the UUID string correctly
     }
 
     public boolean isTokenExpired (String token) {
