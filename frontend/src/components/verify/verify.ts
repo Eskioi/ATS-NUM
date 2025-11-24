@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-import eventBus from '@/eventBus'
+import eventBus from '../../eventBus'
 
 export function useVerify() {
   const verificationCode = ref('')
