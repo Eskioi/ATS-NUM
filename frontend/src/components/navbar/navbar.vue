@@ -5,7 +5,7 @@ import { watch } from 'vue'
 import useNavbar from "./navbar";
 
 const route = useRoute()
-const { state, toggleMenu, closeMenu, handleAuthAction, register } = useNavbar()
+const { state, toggleMenu, closeMenu, handleAuthAction, register, machines } = useNavbar()
 
 // Close drawer on route change
 watch(route, () => {
@@ -43,13 +43,19 @@ watch(route, () => {
       >
         <!-- Navigation Links -->
         <div class="mt-16 flex-1">
-          <ul class="flex flex-col space-y-2 text-gray-100">
-            <li><router-link class="block px-6 py-2 rounded hover:bg-gray-700 transition" to="/" @click="closeMenu">Home</router-link></li>
-            <li><router-link class="block px-6 py-2 rounded hover:bg-gray-700 transition" to="/browseRequests" @click="closeMenu">Browse Requests</router-link></li>
-            <li><router-link class="block px-6 py-2 rounded hover:bg-gray-700 transition" to="/myRequests" @click="closeMenu">My Requests</router-link></li>
-            <li><router-link class="block px-6 py-2 rounded hover:bg-gray-700 transition" to="/rewards" @click="closeMenu">Rewards</router-link></li>
-            <li><router-link class="block px-6 py-2 rounded hover:bg-gray-700 transition" to="/faq" @click="closeMenu">FAQ</router-link></li>
-            <li><router-link class="block px-6 py-2 rounded hover:bg-gray-700 transition" to="/guide" @click="closeMenu">Guide</router-link></li>
+          <ul 
+            v-if="state.isLoggedIn"
+            class="flex flex-col space-y-2 text-gray-100"
+          >
+              <router-link
+                v-for="m in machines"
+                :key="m.id"
+                :to="'/machine/' + m.id"
+                class="block px-6 py-2 hover:bg-gray-700"
+                @click="closeMenu"
+              >
+                {{ m.machine }}
+              </router-link>
           </ul>
         </div>
 

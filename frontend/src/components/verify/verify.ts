@@ -37,6 +37,7 @@ export function useVerify() {
         successMessage.value = 'Vérification réussie ! Redirection en cours...';
         localStorage.setItem('jwtToken', response.data.token);
         eventBus.emit('login-success');
+        eventBus.emit('fetch-machine-data');
         setTimeout(() => router.push({ name: 'Home' }), 1500);
       } else {
         errorMessage.value = 'Code de vérification invalide.'

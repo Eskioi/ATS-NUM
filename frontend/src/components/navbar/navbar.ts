@@ -1,20 +1,23 @@
 import eventBus from "../../eventBus.ts";
 import { useRouter } from "vue-router";
-import { reactive, onMounted, onUnmounted } from "vue";
-import { useSnackbar } from '../snackbar/snackbar'
+import { reactive, onMounted, onUnmounted, ref } from "vue";
+import { useSnackbar } from '../snackbar/snackbar';
+import axios from "axios";
+
+export interface Machine {
+  id: string;
+  machine: string;
+}
 
 export default function useNavbar() {
   const router = useRouter();
-  const { show: showSnackbar } = useSnackbar()
+  const { show: showSnackbar } = useSnackbar();
+  const machines = ref<Machine[]>([]);
 
   const state = reactive({
     isLoggedIn: !!localStorage.getItem("jwtToken"),
     isMenuOpen: false,
   });
-
-  const handleLoginSuccess = () => {
-    state.isLoggedIn = true;
-  };
 
   const toggleMenu = () => {
     state.isMenuOpen = !state.isMenuOpen;
@@ -24,29 +27,50 @@ export default function useNavbar() {
     state.isMenuOpen = false;
   };
 
+  const register = () => router.push("/register");
+  const login = () => router.push("/login");
+
+  const logout = () => {
+    localStorage.clear();
+    state.isLoggedIn = false;
+    showSnackbar('Logout successful!', 'success');
+    router.push({ name: 'Login' });
+  };
+
   const handleAuthAction = () => {
     state.isLoggedIn ? logout() : login();
     closeMenu();
     router.push("/login");
   };
 
-  const register = () => {
-    router.push("/register");
-  };
+  const getAuthHeaders = () => ({
+    headers: { Authorization: `Bearer ${localStorage.getItem("jwtToken")}` },
+  });
 
-  const login = () => {
-    router.push("/login");
-  };
+  const fetchMachines = async () => {
+    try {
+      const response = await axios.get<Machine[]>("machine/getAllMachines", getAuthHeaders());
+      machines.value = response.data;
+    } catch (err) {
+      console.error("Failed to fetch machines", err);
+    }
+  };  
 
-  const logout = () => {
-    localStorage.clear();
-    state.isLoggedIn = false;
-    showSnackbar('Logout successful!', 'success')
-    router.push({ name: 'Home' });
+  const handleLoginSuccess = () => {
+    state.isLoggedIn = true;
+    // Fetch machines after login
+    fetchMachines();
   };
 
   onMounted(() => eventBus.on("login-success", handleLoginSuccess));
   onUnmounted(() => eventBus.off("login-success", handleLoginSuccess));
 
-  return { state, toggleMenu, closeMenu, handleAuthAction, register };
+  return {
+    state,
+    machines,
+    toggleMenu,
+    closeMenu,
+    handleAuthAction,
+    register,
+  };
 }
