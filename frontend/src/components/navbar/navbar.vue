@@ -9,12 +9,10 @@ const route = useRoute();
 const { state, toggleMenu, closeMenu, handleAuthAction, register, machines, goToAdmin } = useNavbar();
 const username = ref(localStorage.getItem("username") || "");
 
-// Track selected machine (UUID string)
 const selectedMachineId = ref<string | null>(
   route.params.id?.toString() ?? null
 )
 
-// Close drawer & update highlight on route change
 watch(route, () => {
   if (state.isMenuOpen) closeMenu()
   selectedMachineId.value = route.params.id?.toString() ?? null
@@ -23,24 +21,21 @@ watch(route, () => {
 
 <template>
   <nav class="bg-gray-800 shadow-md fixed w-full top-0 left-0 z-50">
-    <!-- Top bar -->
     <div class="flex justify-between items-center px-6 h-16 relative">
-      
-      <!-- Home button -->
+
+      <!-- Home button with hover effect -->
       <router-link
         to="/home"
-        class="flex items-center text-gray-400 hover:bg-gray-800 rounded p-2 absolute left-6 
-               top-1/2 transform -translate-y-1/2 z-50 transition-colors"
+        class="flex items-center text-gray-400 hover:text-white hover:bg-gray-700 rounded p-2 absolute left-6 
+               top-1/2 transform -translate-y-1/2 z-50 transition"
         @click="closeMenu"
       >
         <HomeIcon class="w-6 h-6" />
       </router-link>
 
-      <!-- CENTER: Username + Profile Icon -->
       <div v-if="state.isLoggedIn" class="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-gray-300">
         <span class="font-medium">{{ username }}</span>
 
-        <!-- Clickable User Icon -->
         <router-link
           to="/user"
           class="hover:text-white transition"
@@ -50,9 +45,9 @@ watch(route, () => {
         </router-link>
       </div>
 
-      <!-- Burger button -->
+      <!-- Burger button with hover effect -->
       <button
-        class="text-gray-400 p-2 rounded hover:bg-gray-800 transition-colors absolute right-6 
+        class="text-gray-400 p-2 rounded hover:text-white hover:bg-gray-700 transition absolute right-6 
                top-1/2 transform -translate-y-1/2 z-50"
         @click="toggleMenu"
       >
@@ -60,14 +55,12 @@ watch(route, () => {
       </button>
     </div>
 
-    <!-- Right-side sliding drawer -->
     <transition name="slide">
       <div
         v-if="state.isMenuOpen"
         class="fixed top-0 right-0 h-full w-64 bg-gray-800 shadow-xl z-40 flex flex-col 
                justify-between py-6 px-4 border-l border-gray-700"
       >
-        <!-- Navigation Links -->
         <div class="mt-16 flex-1">
           <ul v-if="state.isLoggedIn" class="flex flex-col space-y-2 text-gray-300">
 
@@ -88,10 +81,8 @@ watch(route, () => {
           </ul>
         </div>
 
-        <!-- Auth buttons at bottom -->
         <div class="border-t border-gray-700 pt-4 flex flex-col items-center gap-2 w-full">
 
-          <!-- ADMIN BUTTON -->
           <button
             v-if="isAdmin()"
             :class="[
@@ -103,7 +94,6 @@ watch(route, () => {
             Admin
           </button>
 
-          <!-- Logged-in state -->
           <button
             v-if="state.isLoggedIn"
             class="w-full bg-red-600 hover:bg-red-700 text-white rounded px-4 py-2 
@@ -113,7 +103,6 @@ watch(route, () => {
             Logout
           </button>
 
-          <!-- Logged-out state -->
           <div v-else class="flex w-full gap-2">
             <button
               v-if="route.name !== 'Login'"
@@ -141,7 +130,6 @@ watch(route, () => {
 </template>
 
 <style scoped>
-/* Slide-in animation */
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 0.3s ease;

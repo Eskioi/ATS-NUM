@@ -5,6 +5,7 @@ import com.atsnum.kpi.DTO.*;
 import com.atsnum.kpi.Repositories.UserRepo;
 import com.atsnum.kpi.Security.JwtUtil;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,23 +38,18 @@ public class UserService {
                 user.getRole());
     }
 
-    public void putPassword (UserPasswordChangeDTO userPasswordChangeDTO) {
-        User user = userRepo.getReferenceById(userPasswordChangeDTO.getId());
+    @Transactional
+    public void putPassword(UserPasswordChangeDTO dto) {
 
-        if (!userPasswordChangeDTO.getPreviousPassword().equals(user.getPassword())) {
+        User user = userRepo.getReferenceById(dto.getId());
+
+        if (!passwordEncoder.matches(dto.getPreviousPassword(), user.getPassword())) {
             throw new RuntimeException("The previous password is incorrect");
         }
 
-        userRepo.deleteById(userPasswordChangeDTO.getId());
-        userRepo.save(new User(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                passwordEncoder.encode(userPasswordChangeDTO.getNewPassword()),
-                user.getVerificationCode(),
-                user.getVerificationCodeExpiresAt(),
-                user.isEnabled(),
-                user.getRole()));
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+
+        userRepo.save(user);
     }
 
     public void deleteUser (UUID id) {

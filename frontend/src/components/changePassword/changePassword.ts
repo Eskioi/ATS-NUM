@@ -27,7 +27,7 @@ export function useChangePassword() {
     show()
     try {
       const token = localStorage.getItem("jwtToken")
-      await axios.post(
+      await axios.put(
         "/user/modifyPassword",
         {
           id : localStorage.getItem("selfId"),

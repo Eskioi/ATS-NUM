@@ -43,7 +43,7 @@ public class UserController {
         return (userService.verifyUser(request.getId(), request.getCode()));
     }
 
-    @PostMapping("setAdmin")
+    @PostMapping("/setAdmin")
     public void setAdmin (@RequestBody SetAdminDTO setAdminDTO) {
         userService.setAdmin(setAdminDTO);
     }
