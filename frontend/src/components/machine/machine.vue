@@ -43,6 +43,8 @@ watch(
   async () => {
     await fetchCapteurValues();
     await nextTick();
+    chartRef.value!.width = window.innerWidth * 0.6;
+    chartRef.value!.height = window.innerHeight * 0.5;
     drawChart();
   },
   { deep: true }

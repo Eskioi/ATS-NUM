@@ -4,12 +4,12 @@ import Snackbar from './components/snackbar/snackbar.vue';
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-500 pt-16">
+  <div class="min-h-screen bg-gray-500 flex flex-col">
     <!-- Navbar at top -->
     <Navbar/>
 
     <!-- Main content container, fully centered -->
-    <main class="flex justify-center items-center w-full px-4 py-6 min-h-[calc(100vh-4rem)]">
+    <main class="flex flex-1 justify-center items-center">
       <!-- Inner wrapper to constrain width and center content -->
       <router-view />
     </main>

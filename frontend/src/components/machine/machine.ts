@@ -45,14 +45,10 @@ export function useMachineDetail() {
   // Color palette for sensors
   //---------------------------------------
   const colorPalette = [
-    "#FF6384",
-    "#36A2EB",
-    "#FFCE56",
-    "#4BC0C0",
-    "#9966FF",
-    "#FF9F40",
-    "#C9CBCF",
-    "#8B0000",
+    "#ffffffff",
+    "#ff6acbff",
+    "#34aeffff",
+    "#b5b5b5ff",
   ];
 
   const sensorColors = ref<Record<string, string>>({});
@@ -131,23 +127,32 @@ export function useMachineDetail() {
 
     destroyChart();
 
-    const datasets = capteurValues.value.map((sensorData, index) => {
-      // Assign a persistent color to each sensor if not already assigned
+    // Track colors already assigned
+    const usedColors = new Set(Object.values(sensorColors.value));
+
+    const datasets = capteurValues.value.map((sensorData) => {
+      // Assign a color if not already assigned
       if (!sensorColors.value[sensorData.sensorId]) {
-        sensorColors.value[sensorData.sensorId] =
-          colorPalette[index % colorPalette.length] || "#000000";
+        const availableColor = colorPalette.find((c) => !usedColors.has(c)) || "#000000";
+        sensorColors.value[sensorData.sensorId] = availableColor;
+        usedColors.add(availableColor);
       }
 
+      // Find the sensor details
+      const sensor = sensors.value.find((s) => s.id === sensorData.sensorId);
+      const label = sensor ? `${sensor.nom} in ${sensor.unit}` : "Sensor";
+
       return {
-        label:
-          sensors.value.find((s) => s.id === sensorData.sensorId)?.nom ||
-          "Sensor",
+        label,
         data: sensorData.values.map((v) => ({
           x: new Date(v.dateTime),
           y: v.capteurValue,
         })),
         borderColor: sensorColors.value[sensorData.sensorId],
         backgroundColor: "transparent",
+        pointRadius: 1,
+        borderWidth: 3,
+        tension: 0.4, // smooth lines
       };
     });
 
@@ -155,16 +160,32 @@ export function useMachineDetail() {
 
     const options: ChartOptions<"line"> = {
       responsive: true,
-      plugins: { legend: { position: "top" } },
+      plugins: {
+        legend: {
+          position: "top",
+          labels: {
+            color: "white", // legend text
+          },
+        },
+        tooltip: {
+          titleColor: "white",
+          bodyColor: "white",
+          footerColor: "white",
+        },
+      },
       scales: {
         x: {
           type: "time",
           time: { unit: "hour", tooltipFormat: "HH:mm:ss" },
-          title: { display: true, text: "Time" },
+          title: { display: true, text: "Time", color: "white" },
+          ticks: { color: "white" },
+          grid: { color: "rgba(255, 255, 255, 0.12)" },
         },
         y: {
           beginAtZero: true,
-          title: { display: true, text: "Value" },
+          title: { display: true, text: "Value", color: "white" },
+          ticks: { color: "white" },
+          grid: { color: "rgba(255,255,255,0.12)" },
         },
       },
     };

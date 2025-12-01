@@ -5,6 +5,7 @@ import Machine from '../components/machine/machine.vue'
 import Verify from '../components/verify/verify.vue'
 import Register from '../components/register/register.vue'
 import Home from '../components/home/home.vue'
+import Admin from '../components/admin/admin.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -31,6 +32,11 @@ const routes: RouteRecordRaw[] = [
         path: '/verify',
         name: 'Verify',
         component: Verify,
+    },
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: Admin,
     }
 ]
 

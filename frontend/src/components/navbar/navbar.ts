@@ -56,6 +56,11 @@ export default function useNavbar() {
     }
   };  
 
+  const goToAdmin = () => {
+    router.push("/admin");
+    closeMenu();
+  };
+
   const handleLoginSuccess = () => {
     state.isLoggedIn = true;
     // Fetch machines after login
@@ -72,5 +77,6 @@ export default function useNavbar() {
     closeMenu,
     handleAuthAction,
     register,
+    goToAdmin,
   };
 }

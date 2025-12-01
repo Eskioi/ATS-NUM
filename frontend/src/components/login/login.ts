@@ -32,17 +32,21 @@ export function useLogin() {
     show()
     try {
       const response = await axios.post('/user/login', { email: email.value, password: password.value }, { withCredentials: true })
+      
       const token = response.data.jwtToken
-      const id = response.data.id
+      const role = response.data.role
+      const selfId = response.data.id
 
       if (response.status === 200 && token) {
         localStorage.setItem('jwtToken', token)
-        localStorage.setItem('selfId', id)
+        localStorage.setItem('selfId', selfId)
+        localStorage.setItem('role', role)
         eventBus.emit('login-success')
         showSnackbar('Login successful!', 'success')
         await router.push({ name: 'Home' })
       } else {
         showSnackbar('Login requires verification.', 'error')
+        localStorage.setItem('selfId', response.data.id)
         await router.push({ name: 'Verify' })
       }
     } catch (error) {
