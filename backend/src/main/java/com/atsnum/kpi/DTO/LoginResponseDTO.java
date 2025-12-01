@@ -8,4 +8,6 @@ import java.util.UUID;
 public class LoginResponseDTO {
     private final String jwtToken;
     private final UUID id;
+    private final String role;
+    private final String username;
 }

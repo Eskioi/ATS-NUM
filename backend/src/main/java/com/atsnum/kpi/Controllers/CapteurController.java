@@ -1,38 +1,39 @@
-package com.atsnum.kpi.Controllers;
+    package com.atsnum.kpi.Controllers;
 
-import com.atsnum.kpi.DBModel.Capteur;
-import com.atsnum.kpi.DTO.AddCapteurDTO;
-import com.atsnum.kpi.Services.CapteurService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+    import com.atsnum.kpi.DBModel.Capteur;
+    import com.atsnum.kpi.DTO.AddCapteurDTO;
+    import com.atsnum.kpi.DTO.CapteurIdDTO;
+    import com.atsnum.kpi.Services.CapteurService;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.UUID;
+    import java.util.List;
+    import java.util.UUID;
 
-@RestController
-@RequestMapping("/capteur")
-public class CapteurController {
+    @RestController
+    @RequestMapping("/capteur")
+    public class CapteurController {
 
-    @Autowired
-    CapteurService capteurService;
+        @Autowired
+        CapteurService capteurService;
 
-    @GetMapping("/getAllCapteurs")
-    public List<Capteur> getCapteurs () {
-        return capteurService.getCapteurs();
+        @GetMapping("/getAllCapteurs")
+        public List<Capteur> getCapteurs () {
+            return capteurService.getCapteurs();
+        }
+
+        @PostMapping("/getAllCapteursByMachineId")
+        public List<Capteur> getCapteursByMachineId (@RequestBody CapteurIdDTO id) {
+            return capteurService.getCapteursByMachineId(id.getId());
+        }
+
+        @PostMapping("/addCapteur")
+        public void addCapteur (@RequestBody AddCapteurDTO addCapteurDTO) {
+            capteurService.addCapteur(addCapteurDTO);
+        }
+
+        @DeleteMapping("/deleteCapteur")
+        public void deleteCapteur (@RequestBody CapteurIdDTO id) {
+            capteurService.deleteCapteur(id.getId());
+        }
     }
-
-    @GetMapping("/getAllCapteursByMachineId")
-    public List<Capteur> getCapteursByMachineId (@RequestParam UUID id) {
-        return capteurService.getCapteursByMachineId(id);
-    }
-
-    @PostMapping("/addCapteur")
-    public void addCapteur (@RequestBody AddCapteurDTO addCapteurDTO) {
-        capteurService.addCapteur(addCapteurDTO);
-    }
-
-    @DeleteMapping("/deleteCapteur")
-    public void deleteCapteur (@RequestParam UUID id) {
-        capteurService.deleteCapteur(id);
-    }
-}

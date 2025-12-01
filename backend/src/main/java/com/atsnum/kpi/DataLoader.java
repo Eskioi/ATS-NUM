@@ -37,7 +37,7 @@ public class DataLoader implements CommandLineRunner {
         // -------------------------------
         // USERS
         // -------------------------------
-        userService.registerInsider(new RegisterRequestDTO("tester-user-1", "tester-user-1@gmail.com", "SuperSecretPassword1"));
+        userService.registerInsiderAdmin(new RegisterRequestDTO("tester-user-1", "tester-user-1@gmail.com", "SuperSecretPassword1"));
         userService.registerInsider(new RegisterRequestDTO("tester-user-2", "tester-user-2@gmail.com", "SuperSecretPassword2"));
         userService.registerInsider(new RegisterRequestDTO("tester-user-3", "tester-user-3@gmail.com", "SuperSecretPassword3"));
 

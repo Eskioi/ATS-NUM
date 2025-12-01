@@ -28,21 +28,32 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public User getUser (UUID id) {
-        return userRepo.getReferenceById(id);
+    public UserDTO getUser (UUID id) {
+        User user = userRepo.getReferenceById(id);
+        return new UserDTO(
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRole());
     }
 
     public void putPassword (UserPasswordChangeDTO userPasswordChangeDTO) {
         User user = userRepo.getReferenceById(userPasswordChangeDTO.getId());
+
+        if (!userPasswordChangeDTO.getPreviousPassword().equals(user.getPassword())) {
+            throw new RuntimeException("The previous password is incorrect");
+        }
+
         userRepo.deleteById(userPasswordChangeDTO.getId());
         userRepo.save(new User(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                passwordEncoder.encode(userPasswordChangeDTO.getPassword()),
+                passwordEncoder.encode(userPasswordChangeDTO.getNewPassword()),
                 user.getVerificationCode(),
                 user.getVerificationCodeExpiresAt(),
-                user.isEnabled()));
+                user.isEnabled(),
+                user.getRole()));
     }
 
     public void deleteUser (UUID id) {
@@ -56,7 +67,8 @@ public class UserService {
                 passwordEncoder.encode(registerRequestDTO.getPassword()),
                 generateVerificationCode(),
                 LocalDateTime.now().plusMinutes(15),
-                false);
+                false,
+                "USER");
 
         User savedUser = userRepo.save(newUser);
         sendVerificationEmail(savedUser);
@@ -71,9 +83,33 @@ public class UserService {
                 passwordEncoder.encode(registerRequestDTO.getPassword()),
                 null,
                 null,
-                true);
+                true,
+                "USER");
 
         User savedUser = userRepo.save(newUser);
+    }
+
+    public void registerInsiderAdmin (RegisterRequestDTO registerRequestDTO) {
+        User newUser = new User(null,
+                registerRequestDTO.getUsername(),
+                registerRequestDTO.getEmail(),
+                passwordEncoder.encode(registerRequestDTO.getPassword()),
+                null,
+                null,
+                true,
+                "ADMIN");
+
+        User savedUser = userRepo.save(newUser);
+    }
+
+    public void setAdmin (SetAdminDTO setAdminDTO) {
+         User adminUser = userRepo.getReferenceById(setAdminDTO.getAdminId());
+        if (adminUser.getRole().equals("ADMIN")) {
+            User newAdminUser = userRepo.getReferenceById(setAdminDTO.getUserId());
+            newAdminUser.setRole("ADMIN");
+            userRepo.save(newAdminUser);
+            userRepo.delete(userRepo.getReferenceById(setAdminDTO.getUserId()));
+        }
     }
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
@@ -95,7 +131,9 @@ public class UserService {
         }
 
         return new LoginResponseDTO(token,
-                user.getId());
+                user.getId(),
+                user.getRole(),
+                user.getUsername());
     }
 
     public void updateVerificationCode (UUID id) {
@@ -125,7 +163,10 @@ public class UserService {
         user.setEnabled(true);
         userRepo.save(user);
 
-        return (new VerifyUserResponseDTO(jwtUtil.generateToken(user.getId())));
+        return (new VerifyUserResponseDTO(
+                jwtUtil.generateToken(user.getId()),
+                user.getRole(),
+                user.getUsername()));
     }
 
     public void resendCode (UUID id) {

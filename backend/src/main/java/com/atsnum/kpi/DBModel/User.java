@@ -25,4 +25,5 @@ public class User {
     private String verificationCode;
     private LocalDateTime verificationCodeExpiresAt;
     private boolean enabled;
+    private String role;
 }

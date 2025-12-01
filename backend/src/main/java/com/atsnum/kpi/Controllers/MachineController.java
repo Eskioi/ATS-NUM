@@ -2,6 +2,7 @@ package com.atsnum.kpi.Controllers;
 
 import com.atsnum.kpi.DBModel.Machine;
 import com.atsnum.kpi.DTO.AddMachineDTO;
+import com.atsnum.kpi.DTO.MachineIdDTO;
 import com.atsnum.kpi.Services.MachineService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class MachineController {
         return machineService.getMachines();
     }
 
-    @GetMapping("/getMachine")
-    public Machine getMachine (@RequestParam UUID id) {
-        return machineService.getMachineById(id);
+    @PostMapping("/getMachine")
+    public Machine getMachine (@RequestBody MachineIdDTO id) {
+        return machineService.getMachineById(id.getId());
     }
 
     @PostMapping("/addMachine")
@@ -33,7 +34,7 @@ public class MachineController {
     }
 
     @DeleteMapping("/deleteMachine")
-    public void deleteMachine (@RequestParam UUID id) {
-        machineService.deleteMachine(id);
+    public void deleteMachine (@RequestBody MachineIdDTO id) {
+        machineService.deleteMachine(id.getId());
     }
 }

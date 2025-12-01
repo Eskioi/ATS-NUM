@@ -29,18 +29,23 @@ public class UserController {
     @GetMapping("/getAllUsers")
     public List<User> getUsers () { return userService.getUsers(); }
 
-    @GetMapping("/getUser")
-    public User getUser (@RequestParam UUID id) { return userService.getUser(id); }
+    @PostMapping("/getUser")
+    public UserDTO getUser (@RequestBody IdDTO id) { return userService.getUser(id.getId()); }
 
     @PutMapping("/modifyPassword")
     public void modifyPassword (@RequestBody UserPasswordChangeDTO userPasswordChangeDTO) { userService.putPassword(userPasswordChangeDTO); }
 
     @DeleteMapping("/deleteUser")
-    public void deleteUser (@RequestParam UUID id) { userService.deleteUser(id); }
+    public void deleteUser (@RequestBody IdDTO id) { userService.deleteUser(id.getId()); }
 
     @PostMapping("/verify")
     public VerifyUserResponseDTO verifyUser (@RequestBody VerificationRequestDTO request) {
         return (userService.verifyUser(request.getId(), request.getCode()));
+    }
+
+    @PostMapping("setAdmin")
+    public void setAdmin (@RequestBody SetAdminDTO setAdminDTO) {
+        userService.setAdmin(setAdminDTO);
     }
 
     @PostMapping("/resend")

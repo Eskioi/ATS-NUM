@@ -4,6 +4,7 @@ import com.atsnum.kpi.DBModel.Capteur;
 import com.atsnum.kpi.DBModel.CapteurValue;
 import com.atsnum.kpi.DTO.AddCapteurDTO;
 import com.atsnum.kpi.DTO.AddCapteurValueDTO;
+import com.atsnum.kpi.DTO.CapteurValueIdDTO;
 import com.atsnum.kpi.Services.CapteurValueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,9 @@ public class CapteurValueController {
         return capteurValueService.getCapteurValues();
     }
 
-    @GetMapping("/getAllCapteurValuesByCapteurId")
-    public List<CapteurValue> getCapteurValuesByCapteurId (@RequestParam UUID id) {
-        return capteurValueService.getCapteurValuesByCapteurId(id);
+    @PostMapping("/getAllCapteurValuesByCapteurId")
+    public List<CapteurValue> getCapteurValuesByCapteurId (@RequestBody CapteurValueIdDTO id) {
+        return capteurValueService.getCapteurValuesByCapteurId(id.getId());
     }
 
     @PostMapping("/addCapteurValue")
@@ -33,7 +34,7 @@ public class CapteurValueController {
     }
 
     @DeleteMapping("/deleteCapteurValue")
-    public void deleteCapteurValue (@RequestParam UUID id) {
-        capteurValueService.deleteCapteurValue(id);
+    public void deleteCapteurValue (@RequestBody CapteurValueIdDTO id) {
+        capteurValueService.deleteCapteurValue(id.getId());
     }
 }

@@ -5,8 +5,6 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Getter
-public class UserPasswordChangeDTO {
+public class CapteurValueIdDTO {
     private UUID id;
-    private String previousPassword;
-    private String newPassword;
 }

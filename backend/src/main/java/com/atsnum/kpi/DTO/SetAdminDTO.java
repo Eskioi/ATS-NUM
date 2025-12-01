@@ -1,12 +1,11 @@
 package com.atsnum.kpi.DTO;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.UUID;
 
-@Setter
 @Getter
-public class IdDTO {
-    private UUID id;
+public class SetAdminDTO {
+    private UUID adminId;
+    private UUID userId;
 }

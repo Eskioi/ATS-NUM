@@ -4,6 +4,7 @@ import com.atsnum.kpi.DBModel.Machine;
 import com.atsnum.kpi.DTO.AddMachineDTO;
 import com.atsnum.kpi.Repositories.MachineRepo;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -20,7 +21,7 @@ public class MachineService {
     }
 
     public Machine getMachineById (UUID id) {
-        return repo.getReferenceById(id);
+        return repo.findById(id).orElseThrow(() -> new EntityNotFoundException("Machine not found"));
     }
 
     public void addMachine (AddMachineDTO machineDto) {
