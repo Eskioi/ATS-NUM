@@ -63,11 +63,15 @@ export default function useNavbar() {
 
   const handleLoginSuccess = () => {
     state.isLoggedIn = true;
-    // Fetch machines after login
     fetchMachines();
   };
 
-  onMounted(() => eventBus.on("login-success", handleLoginSuccess));
+  onMounted(() => {
+    eventBus.on("login-success", handleLoginSuccess);
+    if (state.isLoggedIn) {
+      fetchMachines();
+    }
+  });
   onUnmounted(() => eventBus.off("login-success", handleLoginSuccess));
 
   return {

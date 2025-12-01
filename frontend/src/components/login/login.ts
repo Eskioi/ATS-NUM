@@ -36,11 +36,13 @@ export function useLogin() {
       const token = response.data.jwtToken
       const role = response.data.role
       const selfId = response.data.id
+      const username = response.data.username
 
       if (response.status === 200 && token) {
         localStorage.setItem('jwtToken', token)
         localStorage.setItem('selfId', selfId)
         localStorage.setItem('role', role)
+        localStorage.setItem('username', username)
         eventBus.emit('login-success')
         showSnackbar('Login successful!', 'success')
         await router.push({ name: 'Home' })

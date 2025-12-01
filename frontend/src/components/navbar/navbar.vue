@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { HomeIcon, Menu } from 'lucide-vue-next'
+import { HomeIcon, Menu, User } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import { watch, ref } from 'vue'
 import useNavbar from "./navbar";
 import { isAdmin } from '../../auth/auth';
 
-const route = useRoute()
-const { state, toggleMenu, closeMenu, handleAuthAction, register, machines, goToAdmin } = useNavbar()
+const route = useRoute();
+const { state, toggleMenu, closeMenu, handleAuthAction, register, machines, goToAdmin } = useNavbar();
+const username = ref(localStorage.getItem("username") || "");
 
 // Track selected machine (UUID string)
 const selectedMachineId = ref<string | null>(
@@ -34,6 +35,20 @@ watch(route, () => {
       >
         <HomeIcon class="w-6 h-6" />
       </router-link>
+
+      <!-- CENTER: Username + Profile Icon -->
+      <div v-if="state.isLoggedIn" class="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-gray-300">
+        <span class="font-medium">{{ username }}</span>
+
+        <!-- Clickable User Icon -->
+        <router-link
+          to="/user"
+          class="hover:text-white transition"
+          @click="closeMenu"
+        >
+          <User class="w-6 h-6" />
+        </router-link>
+      </div>
 
       <!-- Burger button -->
       <button
