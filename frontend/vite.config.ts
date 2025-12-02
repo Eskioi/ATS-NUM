@@ -11,4 +11,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    host: true,            // allow access from network / tunnels
+    strictPort: true,      // optional: prevent Vite from switching ports
+    allowedHosts: true,   // allow all hosts (important for tunnels)
+  },
 })

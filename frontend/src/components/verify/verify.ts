@@ -26,7 +26,7 @@ export function useVerify() {
     }
 
     const payload = {
-      id: Number(selfId),
+      id: selfId,
       code: verificationCode.value,
     }
 
