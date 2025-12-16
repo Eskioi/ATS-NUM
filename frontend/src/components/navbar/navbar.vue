@@ -6,8 +6,7 @@ import useNavbar from "./navbar";
 import { isAdmin } from '../../auth/auth';
 
 const route = useRoute();
-const { state, toggleMenu, closeMenu, handleAuthAction, register, machines, goToAdmin } = useNavbar();
-const username = ref(localStorage.getItem("username") || "");
+const { state, toggleMenu, closeMenu, handleAuthAction, register, machines, goToAdmin, username } = useNavbar();
 
 const selectedMachineId = ref<string | null>(
   route.params.id?.toString() ?? null

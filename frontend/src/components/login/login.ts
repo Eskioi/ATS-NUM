@@ -8,31 +8,37 @@ import { useSnackbar } from '../snackbar/snackbar'
 export function useLogin() {
   const email = ref('')
   const password = ref('')
-  const errorMessage = ref('')
   const emailError = ref('')
   const router = useRouter()
-  const { show, hide } = useSpinner()
+  const { show: showSpinner, hide: hideSpinner } = useSpinner()
   const { show: showSnackbar } = useSnackbar()
 
   const validateEmail = (value: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    emailError.value = emailPattern.test(value) ? '' : 'Please enter a valid email address.'
+    emailError.value = emailPattern.test(value)
+      ? ''
+      : 'Please enter a valid email address.'
   }
 
   const handleLogin = async () => {
-    errorMessage.value = ''
     emailError.value = ''
     validateEmail(email.value)
 
+    // Input validation
     if (!email.value || !password.value || emailError.value) {
       showSnackbar('Please fill all fields correctly.', 'error')
       return
     }
 
-    show()
+    showSpinner()
+
     try {
-      const response = await axios.post('/user/login', { email: email.value, password: password.value }, { withCredentials: true })
-      
+      const response = await axios.post(
+        '/user/login',
+        { email: email.value, password: password.value },
+        { withCredentials: true }
+      )
+
       const token = response.data.jwtToken
       const role = response.data.role
       const selfId = response.data.id
@@ -43,21 +49,28 @@ export function useLogin() {
         localStorage.setItem('selfId', selfId)
         localStorage.setItem('role', role)
         localStorage.setItem('username', username)
+
         eventBus.emit('login-success')
         showSnackbar('Login successful!', 'success')
+
         await router.push({ name: 'Home' })
       } else {
-        showSnackbar('Login requires verification.', 'error')
+        showSnackbar('Your account requires verification.', 'error')
         localStorage.setItem('selfId', response.data.id)
         await router.push({ name: 'Verify' })
       }
-    } catch (error) {
-      errorMessage.value = 'Login failed. Please try again.'
-      showSnackbar(errorMessage.value, 'error')
+    } catch (error: any) {
+      showSnackbar('Login failed. Please try again.', 'error')
     } finally {
-      hide()
+      hideSpinner()
     }
   }
 
-  return { email, password, errorMessage, emailError, handleLogin, validateEmail }
+  return {
+    email,
+    password,
+    emailError,
+    handleLogin,
+    validateEmail,
+  }
 }

@@ -1,26 +1,24 @@
+// Updated verify page using snackbar
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import eventBus from '../../eventBus'
+import { useSnackbar } from '../snackbar/snackbar'
 
 export function useVerify() {
   const verificationCode = ref('')
-  const errorMessage = ref('')
-  const successMessage = ref('')
   const isLoading = ref(false)
   const isResending = ref(false)
 
   const router = useRouter()
+  const { show } = useSnackbar()
 
-  /** ✅ Handle verification submission */
   const handleVerify = async () => {
-    errorMessage.value = ''
-    successMessage.value = ''
     isLoading.value = true
 
     const selfId = localStorage.getItem('selfId')
     if (!selfId) {
-      errorMessage.value = 'Utilisateur non trouvé. Veuillez vous reconnecter.'
+      show('User not found. Veuillez réessayer.', 'error')
       isLoading.value = false
       return
     }
@@ -32,36 +30,31 @@ export function useVerify() {
 
     try {
       const response = await axios.post('/user/verify', payload, { withCredentials: true })
-      
+
       if (response.status === 200 && response.data.token) {
-        successMessage.value = 'Vérification réussie ! Redirection en cours...';
-        localStorage.setItem('jwtToken', response.data.token);
-        localStorage.setItem('role', response.data.role);
-        localStorage.setItem('username', response.data.username);
-        eventBus.emit('login-success');
-        eventBus.emit('fetch-machine-data');
-        setTimeout(() => router.push({ name: 'Home' }), 1000);
+        show('Verification successful !', 'success')
+        localStorage.setItem('jwtToken', response.data.token)
+        localStorage.setItem('role', response.data.role)
+        localStorage.setItem('username', response.data.username)
+        eventBus.emit('login-success')
+        setTimeout(() => router.push({ name: 'Home' }), 1000)
       } else {
-        errorMessage.value = 'Code de vérification invalide.'
+        show('Verification failed. Vérifiez votre code.', 'error')
       }
     } catch (error: any) {
       console.error('Verification error:', error)
-      errorMessage.value =
-        error.response?.data?.message || 'Erreur lors de la vérification.'
+      show(error.response?.data?.message || 'Error during verification.', 'error')
     } finally {
       isLoading.value = false
     }
   }
 
-  /** 🔁 Resend verification code */
   const handleResend = async () => {
-    errorMessage.value = ''
-    successMessage.value = ''
     isResending.value = true
 
     const selfId = localStorage.getItem('selfId')
     if (!selfId) {
-      errorMessage.value = 'Utilisateur non trouvé. Veuillez vous reconnecter.'
+      show('User not found. Veuillez réessayer.', 'error')
       isResending.value = false
       return
     }
@@ -69,15 +62,13 @@ export function useVerify() {
     try {
       const response = await axios.post('/user/resend', { id: Number(selfId) }, { withCredentials: true })
       if (response.status === 200) {
-        successMessage.value =
-          'Un nouveau code de vérification a été envoyé à votre e-mail.'
+        show('A new verification code has been sent à votre e-mail.', 'success')
       } else {
-        errorMessage.value = 'Impossible de renvoyer le code. Veuillez réessayer.'
+        show('Error during r\'envoi du code.', 'error')
       }
     } catch (error: any) {
       console.error('Resend error:', error)
-      errorMessage.value =
-        error.response?.data?.message || 'Erreur lors de l’envoi du code.'
+      show(error.response?.data?.message || 'Error during r\'envoi du code.', 'error')
     } finally {
       isResending.value = false
     }
@@ -85,8 +76,6 @@ export function useVerify() {
 
   return {
     verificationCode,
-    errorMessage,
-    successMessage,
     isLoading,
     isResending,
     handleVerify,

@@ -10,6 +10,8 @@ const {
   sensors,
   selectedSensorIds,
   chartRef,
+  selectedTimespan,
+  timespanOptions,
   fetchMachineName,
   fetchSensors,
   fetchCapteurValues,
@@ -43,8 +45,6 @@ watch(
   async () => {
     await fetchCapteurValues();
     await nextTick();
-    chartRef.value!.width = window.innerWidth * 0.6;
-    chartRef.value!.height = window.innerHeight * 0.5;
     drawChart();
   },
   { deep: true }
@@ -52,35 +52,57 @@ watch(
 </script>
 
 <template>
-  <div class="flex justify-center items-center min-h-screen">
-    <div class="w-full h-full p-6 space-y-6 bg-gray-800 rounded-lg shadow-lg overflow-auto">
+  <div class="flex justify-center items-center min-h-screen pt-16">
+    <div class="w-full h-[calc(100vh-5rem)] p-6 space-y-6 bg-gray-800 rounded-lg shadow-lg overflow-auto">
       
       <h1 class="text-2xl font-bold text-center text-white mb-4">
         {{ machineName }}
       </h1>
 
-      <!-- SENSOR SELECTOR -->
-      <div>
-        <label class="block mb-1 text-white font-medium">Select Sensors</label>
-        <div class="flex gap-x-4 gap-y-2 p-2 bg-gray-700 rounded-md border border-gray-400">
-          <div
-            v-for="sensor in sensors"
-            :key="sensor.id"
-            class="flex items-center"
+      <!-- Controls in a single row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        
+        <!-- Timespan Selector -->
+        <div>
+          <label class="block mb-1 text-white font-medium">Time Period</label>
+          <select
+            v-model="selectedTimespan"
+            class="w-full px-4 py-2 bg-gray-700 text-white rounded-md border border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all cursor-pointer"
           >
-            <input
-              type="checkbox"
-              :value="sensor.id"
-              v-model="selectedSensorIds"
-              class="mr-2 accent-blue-500"
-            />
-            <span class="text-white">{{ sensor.nom }}</span>
+            <option
+              v-for="option in timespanOptions"
+              :key="option.value"
+              :value="option.value"
+              class="bg-gray-700 text-white"
+            >
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Sensor Selector -->
+        <div>
+          <label class="block mb-1 text-white font-medium">Select Sensors</label>
+          <div class="flex flex-wrap gap-x-4 gap-y-2 p-2 bg-gray-700 rounded-md border border-gray-400 max-h-[100px] overflow-y-auto">
+            <div
+              v-for="sensor in sensors"
+              :key="sensor.id"
+              class="flex items-center"
+            >
+              <input
+                type="checkbox"
+                :value="sensor.id"
+                v-model="selectedSensorIds"
+                class="mr-2 accent-blue-500"
+              />
+              <span class="text-white">{{ sensor.nom }}</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- CHART -->
-      <div class="bg-gray-700 p-4 rounded-md border border-gray-400 shadow-inner">
+      <div class="bg-gray-700 p-4 rounded-md border border-gray-400 shadow-inner" style="height: calc(100vh - 20rem);">
         <canvas ref="chartRef" class="w-full h-full"></canvas>
       </div>
 

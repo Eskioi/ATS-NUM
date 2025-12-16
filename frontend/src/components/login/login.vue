@@ -4,7 +4,7 @@ import Spinner from '../spinner/spinner.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const { email, password, errorMessage, emailError, handleLogin, validateEmail } = useLogin()
+const { email, password, emailError, handleLogin, validateEmail } = useLogin()
 
 const goToRegister = () => {
   router.push({ name: 'Register' })
@@ -44,9 +44,6 @@ const goToRegister = () => {
             class="w-full px-3 py-2 mt-1 border border-gray-400 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-
-        <!-- Backend error -->
-        <div v-if="errorMessage" class="text-red-400 text-sm">{{ errorMessage }}</div>
 
         <!-- Submit button -->
         <button

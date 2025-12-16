@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import eventBus from '../../eventBus'
 import useSpinner from '../spinner/spinner'
 import { useSnackbar } from '../snackbar/snackbar'
 
@@ -47,7 +46,6 @@ export function useRegister() {
 
       if (response.status === 200 && id) {
         localStorage.setItem('selfId', id)
-        eventBus.emit('login-success')
         showSnackbar('Registration successful!', 'success')
         await router.push({ name: 'Verify' })
       }

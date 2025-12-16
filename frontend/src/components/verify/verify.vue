@@ -3,8 +3,6 @@ import { useVerify } from './verify'
 
 const {
   verificationCode,
-  errorMessage,
-  successMessage,
   isLoading,
   isResending,
   handleVerify,
@@ -13,7 +11,7 @@ const {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-900">
+  <div class="flex items-center justify-center">
     <div class="w-full max-w-md p-6 space-y-6 bg-gray-800 rounded-lg mx-auto">
       <h2 class="text-2xl font-bold text-center text-white">Vérification de compte</h2>
 
@@ -35,9 +33,6 @@ const {
             class="w-full px-3 py-2 mt-1 border border-gray-400 rounded-md bg-gray-700 text-white text-center tracking-widest text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-
-        <div v-if="errorMessage" class="text-red-400 text-sm text-center">{{ errorMessage }}</div>
-        <div v-if="successMessage" class="text-green-500 text-sm text-center">{{ successMessage }}</div>
 
         <button
           type="submit"

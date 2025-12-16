@@ -14,10 +14,16 @@ export default function useNavbar() {
   const { show: showSnackbar } = useSnackbar();
   const machines = ref<Machine[]>([]);
 
+  const username = ref(localStorage.getItem("username") || "");
+
   const state = reactive({
     isLoggedIn: !!localStorage.getItem("jwtToken"),
     isMenuOpen: false,
   });
+
+  const updateUsername = () => {
+    username.value = localStorage.getItem("username") || "";
+  };
 
   const toggleMenu = () => {
     state.isMenuOpen = !state.isMenuOpen;
@@ -32,6 +38,7 @@ export default function useNavbar() {
 
   const logout = () => {
     localStorage.clear();
+    updateUsername(); 
     state.isLoggedIn = false;
     showSnackbar('Logout successful!', 'success');
     router.push({ name: 'Login' });
@@ -54,7 +61,7 @@ export default function useNavbar() {
     } catch (err) {
       console.error("Failed to fetch machines", err);
     }
-  };  
+  };
 
   const goToAdmin = () => {
     router.push("/admin");
@@ -63,24 +70,29 @@ export default function useNavbar() {
 
   const handleLoginSuccess = () => {
     state.isLoggedIn = true;
+    updateUsername(); 
     fetchMachines();
   };
 
   onMounted(() => {
     eventBus.on("login-success", handleLoginSuccess);
     if (state.isLoggedIn) {
+      updateUsername();    
       fetchMachines();
     }
   });
+
   onUnmounted(() => eventBus.off("login-success", handleLoginSuccess));
 
   return {
     state,
+    username,
     machines,
     toggleMenu,
     closeMenu,
     handleAuthAction,
     register,
     goToAdmin,
+    updateUsername,
   };
 }
